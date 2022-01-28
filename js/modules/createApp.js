@@ -17,6 +17,12 @@ export const createApp = () => {
         placeholder="ввести задачу">
     </label>
 
+    <select style="margin-right: 15px;" name="important">
+      <option>Обычная</option>
+      <option>Важная</option>
+      <option>Срочная</option>
+    </select>
+
     <button type="submit" class="btn btn-primary me-3">
       Сохранить
     </button>

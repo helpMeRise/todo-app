@@ -6,11 +6,15 @@ import {
   input,
 } from './elements.js';
 import {getStorage, setStorage} from './storage.js';
-import {taskSuccess, taskRemove} from './tasksControl.js';
+import {
+  taskSuccess,
+  taskRemove,
+  taskEdit,
+  taskEditSave,
+} from './tasksControl.js';
 import {tasksNumberChange} from './render.js';
-import {login} from './authorization.js';
 
-export const events = (data) => {
+export const events = (data, login) => {
   form.addEventListener('submit', e => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -38,17 +42,33 @@ export const events = (data) => {
     if (target.closest('.btn-success')) {
       tasks.forEach(item => {
         if (target.closest('tr') === item) {
-          taskSuccess(item);
+          taskSuccess(item, login);
         }
       });
     }
     if (target.closest('.btn-danger')) {
       tasks.forEach((item, index) => {
         if (target.closest('tr') === item) {
-          taskRemove(item, index);
+          const agree = confirm('Действительно хотите удалить задачу?');
+          if (agree) {
+            taskRemove(item, index, login);
+          }
+        }
+      });
+    }
+    if (target.closest('.btn-edit')) {
+      tasks.forEach(item => {
+        if (target.closest('tr') === item) {
+          taskEdit(item);
         }
       });
     }
     tasksNumberChange();
+  });
+  const tasks = [...tbody.rows];
+  tasks.forEach((item, index) => {
+    item.cells[1].addEventListener('blur', () => {
+      taskEditSave(item, index, login);
+    });
   });
 };
